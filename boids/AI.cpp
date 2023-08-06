@@ -1,4 +1,5 @@
 #include "AI.h"
+#include "Boid.h"
 
 
 void CursorFollowingAI::update(Boid& boid) {

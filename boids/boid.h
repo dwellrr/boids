@@ -4,6 +4,10 @@
 #include "AI.h"
 
 #pragma once
+#ifndef BOID_H
+#define BOID_H
+
+class AI;
 
 struct vector_2 {
 	float x;
@@ -32,4 +36,5 @@ protected:
 	
 };
 
+#endif
 

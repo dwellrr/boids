@@ -1,5 +1,12 @@
 #pragma once
 #include "boid.h"
+
+#ifndef AI_H
+#define AI_H
+
+// Forward declaration of Boid class
+class Boid;
+
 class AI
 {
 public:
@@ -20,3 +27,4 @@ public:
 private:
     std::vector<Boid*>& allBoids;
 };
+#endif
