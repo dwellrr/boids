@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{a26201d1-86f4-4a24-9b9b-24dd9627606e}</ProjectGuid>
-    <RootNamespace>fuckinghell</RootNamespace>
+    <RootNamespace>boids</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>boid-thesis</ProjectName>
   </PropertyGroup>
