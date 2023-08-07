@@ -123,7 +123,7 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
 
 	// Configure the Vertex Attribute so that OpenGL knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -131,14 +131,22 @@ int main()
 	glEnableVertexAttribArray(0);
 
 	// Bind both the VBO and VAO to 0 so that we don't accidentally modify the VAO and VBO we created
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
 
 
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
+
+		boids.updateBoids();
+
+		v_vertices = boids.getAllVert();
+		GLfloat* vertices = &v_vertices[0];
+
+		glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
+
 		// Specify the color of the background
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		// Clean the back buffer and assign the new color to it
@@ -153,6 +161,7 @@ int main()
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
 		glfwPollEvents();
+
 	}
 
 

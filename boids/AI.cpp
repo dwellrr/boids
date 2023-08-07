@@ -5,7 +5,9 @@
 void CursorFollowingAI::update(Boid& boid) {
     // Logic for birds to follow the cursor
     // Example: bird.position = getCursorPosition();
-    boid.setPos({ 1, 1, 1 });
+    vector_2 newPos = boid.getPos();
+    newPos.x += 0.00001f;
+    boid.setPos({ newPos });
 }
 
 
