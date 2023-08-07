@@ -30,152 +30,112 @@ std::vector<vector_2> boidCenters{
 	{0.0f, -0.1f, 0}
 };
 
+
+// ... (Vertex and Fragment Shader source code, boidCenters vector declaration) ...
+
 int main()
-{	
-	boidManager boids(boidCenters);
+{
+    boidManager boids(boidCenters);
 
-	// (1) GLFW: Initialise & Configure
-	// -----------------------------------------
-	if (!glfwInit())
-		exit(EXIT_FAILURE);
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // ... (GLFW window initialization and OpenGL context setup) ...
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-	int monitor_width = mode->width; // Monitor's width.
-	int monitor_height = mode->height;
+    int monitor_width = mode->width; // Monitor's width.
+    int monitor_height = mode->height;
 
-	int window_width = (int)(monitor_width * 0.5f); // Window size will be 50% the monitor's size...
-	int window_height = (int)(monitor_width * 0.5f); // ... Cast is simply to silence the compiler warning.
+    int window_width = (int)(monitor_width * 0.5f); // Window size will be 50% the monitor's size...
+    int window_height = (int)(monitor_width * 0.5f); // ... Cast is simply to silence the compiler warning.
 
-	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "GLFW Test Window", NULL, NULL);
-	// GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Drawing Basic Shapes - Buffer Objects & Shaders", glfwGetPrimaryMonitor(), NULL); // Full Screen Mode ("Alt" + "F4" to Exit!)
+    GLFWwindow* window = glfwCreateWindow(window_width, window_height, "GLFW Test Window", NULL, NULL);
+    // GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Drawing Basic Shapes - Buffer Objects & Shaders", glfwGetPrimaryMonitor(), NULL); // Full Screen Mode ("Alt" + "F4" to Exit!)
 
-	if (!window)
-	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
+    if (!window)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
 
-	// Introduce the window into the current context
-	glfwMakeContextCurrent(window);
-
-	//Load GLAD so it configures OpenGL
-	gladLoadGL();
-	// Specify the viewport of OpenGL in the Window
-	glViewport(0, 0, window_width, window_height);
+    // Introduce the window into the current context
+    glfwMakeContextCurrent(window);
 
 
-	// Create Vertex Shader Object and get its reference
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	// Attach Vertex Shader source to the Vertex Shader Object
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	// Compile the Vertex Shader into machine code
-	glCompileShader(vertexShader);
+    gladLoadGL();
+    glViewport(0, 0, window_width, window_height);
 
-	// Create Fragment Shader Object and get its reference
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	// Attach Fragment Shader source to the Fragment Shader Object
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	// Compile the Vertex Shader into machine code
-	glCompileShader(fragmentShader);
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
 
-	// Create Shader Program Object and get its reference
-	GLuint shaderProgram = glCreateProgram();
-	// Attach the Vertex and Fragment Shaders to the Shader Program
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	// Wrap-up/Link all the shaders together into the Shader Program
-	glLinkProgram(shaderProgram);
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
 
-	// Delete the now useless Vertex and Fragment Shader objects
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
 
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 
-	std::vector<GLfloat> v_vertices;
-	v_vertices = boids.getAllVert();
-	GLfloat* vertices = &v_vertices[0];
+    GLuint VAO, VBO, EBO;
 
-	// Vertices coordinates
-	/*GLfloat vertices[] =
-	{
-		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
-		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
-		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f // Upper corner
-	};
-	*/
-	
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
-	// Create reference containers for the Vartex Array Object and the Vertex Buffer Object
-	GLuint VAO, VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, boids.getAllVertSize() * sizeof(GLfloat), boids.getAllVert(), GL_STREAM_DRAW);
 
-	// Generate the VAO and VBO with only 1 object each
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, boids.getAllIndicesSize() * sizeof(GLuint), boids.getAllIndices(), GL_STREAM_DRAW);
 
-	// Make the VAO the current Vertex Array Object by binding it
-	glBindVertexArray(VAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
 
-	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
+    glBindVertexArray(0);
 
-	// Configure the Vertex Attribute so that OpenGL knows how to read the VBO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	// Enable the Vertex Attribute so that OpenGL knows to use it
-	glEnableVertexAttribArray(0);
+    while (!glfwWindowShouldClose(window))
+    {
+        boids.updateBoids();
 
-	// Bind both the VBO and VAO to 0 so that we don't accidentally modify the VAO and VBO we created
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindVertexArray(0);
+        // Update VBO data if needed
+        if (boids.isUpdated())
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, boids.getAllVertSize() * sizeof(GLfloat), boids.getAllVert());
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            boids.setUpdated(false);
+        }
 
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, boids.getAllIndicesSize(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
 
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
 
-	// Main while loop
-	while (!glfwWindowShouldClose(window))
-	{
-
-		boids.updateBoids();
-
-		v_vertices = boids.getAllVert();
-		GLfloat* vertices = &v_vertices[0];
-
-		glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
-
-		// Specify the color of the background
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT);
-		// Tell OpenGL which Shader Program we want to use
-		glUseProgram(shaderProgram);
-		// Bind the VAO so OpenGL knows to use it
-		glBindVertexArray(VAO);
-		// Draw the triangle using the GL_TRIANGLES primitive
-		glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
-		// Swap the back buffer with the front buffer
-		glfwSwapBuffers(window);
-		// Take care of all GLFW events
-		glfwPollEvents();
-
-	}
-
-
-
-	// Delete all the objects we've created
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
-	// Delete window before ending the program
-	glfwDestroyWindow(window);
-	// Terminate GLFW before ending the program
-	glfwTerminate();
-	return 0;
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteProgram(shaderProgram);
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
 }
+
 
 /*TODO
 1. figure out better rendering system

@@ -7,12 +7,21 @@ public:
 	boidManager(Boid *firstBoid);
 	boidManager(std::vector<vector_2> _boids);
 
-	std::vector<GLfloat> getAllVert();
+	GLfloat* getAllVert();
+	int getAllVertSize();
+
+	int* getAllIndices();
+	int getAllIndicesSize();
+
 	void addBoid(vector_2 v);
 	void updateBoids();
 
+	bool isUpdated() const { return updated; };
+	void setUpdated(bool value) { updated = value; };
+
 private:
 	std::vector<Boid*> boids;
+	bool updated;
 
 	
 };
