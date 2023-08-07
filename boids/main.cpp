@@ -176,3 +176,10 @@ int main()
 	glfwTerminate();
 	return 0;
 }
+
+/*TODO
+1. figure out better rendering system
+2. better loop for consistency
+
+3. boid follow AI
+*/
