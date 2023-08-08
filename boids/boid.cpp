@@ -25,15 +25,26 @@ vector_2 Boid::getPos() {
 	return this->pos;
 }
 
-std::vector<GLfloat> Boid::getVertices() {
+std::vector<GLfloat> Boid::getVertices(int width, int height) {
 
+	float x_norm = pos.x / (width / 2) - 1;
+	float y_norm = -(pos.y / (height / 2) - 1);
 	std::vector <GLfloat> vertices =
-	{ -SIZE + pos.x, -SIZE * float(sqrt(3)) / 3 + pos.y, 0.0f, // Lower left corner
-	SIZE + pos.x, -SIZE * float(sqrt(3)) / 3 + pos.y, 0.0f, // Lower right corner
-	0.0f + pos.x, SIZE * float(sqrt(3)) * 2 / 3 + pos.y, 0.0f
+	{ -SIZE + x_norm, -SIZE * float(sqrt(3)) / 2 + y_norm, 0.0f, // Lower left corner
+	SIZE + x_norm, -SIZE * float(sqrt(3)) / 2 + y_norm, 0.0f, // Lower right corner
+	0.0f + x_norm, SIZE * float(sqrt(3)) * 2 / 2 + y_norm, 0.0f
 	};
 
 	return vertices;
+}
+
+void Boid::setAI(char ai, std::vector<Boid*> boids) {
+	if (ai == 'b') {
+		this->ai = new BoidFollowingAI(boids);
+	}
+	else {
+		this->ai = new CursorFollowingAI();
+	}
 }
 
 void Boid::update(double xpos, double ypos) {

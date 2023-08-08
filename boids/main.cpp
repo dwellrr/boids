@@ -21,13 +21,118 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "}\n\0";
 
 std::vector<vector_2> boidCenters{
-	{0.0f, 0.0f, 0},
-	{0.1f, 0.0f, 0},
-	{0.1f, 0.1f, 0},
-	{0.0f, 0.1f, 0},
-	{-0.1f, 0.0f, 0},
-	{-0.1f, -0.1f, 0},
-	{0.0f, -0.1f, 0}
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0},
+	{300, 300, 0},
+	{400, 300, 0},
+	{400, 400, 0},
+	{300, 400, 0},
+	{200, 300, 0},
+	{200, 200, 0},
+	{300, 200, 0}
 };
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -59,8 +164,8 @@ int main()
 	int monitor_width = mode->width; // Monitor's width.
 	int monitor_height = mode->height;
 
-	int window_width = (int)(monitor_width * 0.5f); // Window size will be 50% the monitor's size...
-	int window_height = (int)(monitor_width * 0.5f); // ... Cast is simply to silence the compiler warning.
+	int window_width = (int)(monitor_width); // Window size will be 50% the monitor's size...
+	int window_height = (int)(monitor_height); // ... Cast is simply to silence the compiler warning.
 
 	double xpos, ypos;
 
@@ -112,7 +217,7 @@ int main()
 
 
 	std::vector<GLfloat> v_vertices;
-	v_vertices = boids.getAllVert();
+	v_vertices = boids.getAllVert(window_width, window_height);
 	GLfloat* vertices = &v_vertices[0];
 
 	// Vertices coordinates
@@ -152,18 +257,20 @@ int main()
 
 
 	double x_norm, y_norm;
+
+	boids.setAI('b', boids.boids);
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
 
 		glfwGetCursorPos(window, &xpos, &ypos);
-		x_norm = xpos / (window_width / 2) - 1;
-		y_norm = -(ypos / (window_height / 2) - 1);
 
 
-		boids.updateBoids(x_norm, y_norm);
+		boids.updateBoids(xpos, ypos);
+		//x_norm = xpos / (window_width / 2) - 1;
+		//y_norm = -(ypos / (window_height / 2) - 1);
 
-		v_vertices = boids.getAllVert();
+		v_vertices = boids.getAllVert(window_width, window_height);
 		GLfloat* vertices = &v_vertices[0];
 
 		glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);

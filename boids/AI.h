@@ -20,11 +20,20 @@ public:
 
 class BoidFollowingAI : public AI {
 public:
-    BoidFollowingAI(std::vector<Boid*>& allBoids) : allBoids(allBoids) {};
+    BoidFollowingAI(std::vector<Boid*> allBoids);
 
     void update(Boid& boid, double xpos, double ypos) override;
 
 private:
-    std::vector<Boid*>& allBoids;
+    std::vector<Boid*> allBoids;
+
+    double visual_range = 100;
+    double turnfactor = 0.2;
+    double protectedRange = 25;
+    double centeringfactor = 0.000000006;
+    double avoidfactor = 0.000007;
+    double matchingfactor = 0.0006;
+    double maxspeed = 0.01;
+    double minspeed = 0.005;
 };
 #endif

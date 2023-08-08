@@ -20,11 +20,11 @@ void boidManager::addBoid(vector_2 v) {
 	this->boids.push_back(boid);
 }
 
-std::vector<GLfloat> boidManager::getAllVert() {
+std::vector<GLfloat> boidManager::getAllVert(int width, int height) {
 	std::vector<GLfloat> ver = {};
 	for (Boid* i : this->boids)
 	{
-		std::vector<GLfloat> boid_ver = i->getVertices();
+		std::vector<GLfloat> boid_ver = i->getVertices(width, height);
 		ver.insert(ver.end(), boid_ver.begin(), boid_ver.end());
 	}
 	return ver;
@@ -33,5 +33,11 @@ std::vector<GLfloat> boidManager::getAllVert() {
 void boidManager::updateBoids(double xpos, double ypos) {
 	for (Boid* boid : this->boids) {
 		boid->update(xpos, ypos);
+	}
+}
+
+void boidManager::setAI(char ai, std::vector<Boid*> boids) {
+	for (Boid* boid : this->boids) {
+		boid->setAI(ai, boids);
 	}
 }
