@@ -427,5 +427,4 @@ int main()
 1. figure out better rendering system
 2. better loop for consistency
 
-3. boid follow AI
 */
