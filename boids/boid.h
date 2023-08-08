@@ -20,17 +20,19 @@ public:
 	Boid(float x, float y);
 	Boid(vector_2 v);
 
+	float SPEED = 0.0005f;
+	float SIZE = 0.008f;
+
 	vector_2 getPos();
 	void setPos(vector_2 _pos);
 	std::vector<GLfloat> getVertices();
 
-	void update();
+	void update(double xpos, double ypos);
 
 protected:
 	vector_2 pos;
 	vector_2 direction = {0, 0, 0};
-	float SPEED = 0.3f;
-	float SIZE = 0.008f;
+
 
 	AI* ai;
 	

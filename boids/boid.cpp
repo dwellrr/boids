@@ -36,6 +36,6 @@ std::vector<GLfloat> Boid::getVertices() {
 	return vertices;
 }
 
-void Boid::update() {
-	ai->update(*this);
+void Boid::update(double xpos, double ypos) {
+	ai->update(*this, xpos,  ypos);
 }

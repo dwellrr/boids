@@ -30,6 +30,17 @@ std::vector<vector_2> boidCenters{
 	{0.0f, -0.1f, 0}
 };
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		double xpos, ypos;
+		//getting cursor position
+		glfwGetCursorPos(window, &xpos, &ypos);
+		std::cout << "Cursor Position at (" << xpos << " : " << ypos << std::endl;
+	}
+}
+
 int main()
 {	
 	boidManager boids(boidCenters);
@@ -51,6 +62,8 @@ int main()
 	int window_width = (int)(monitor_width * 0.5f); // Window size will be 50% the monitor's size...
 	int window_height = (int)(monitor_width * 0.5f); // ... Cast is simply to silence the compiler warning.
 
+	double xpos, ypos;
+
 	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "GLFW Test Window", NULL, NULL);
 	// GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Drawing Basic Shapes - Buffer Objects & Shaders", glfwGetPrimaryMonitor(), NULL); // Full Screen Mode ("Alt" + "F4" to Exit!)
 
@@ -62,6 +75,8 @@ int main()
 
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
@@ -136,11 +151,17 @@ int main()
 
 
 
+	double x_norm, y_norm;
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
 
-		boids.updateBoids();
+		glfwGetCursorPos(window, &xpos, &ypos);
+		x_norm = xpos / (window_width / 2) - 1;
+		y_norm = -(ypos / (window_height / 2) - 1);
+
+
+		boids.updateBoids(x_norm, y_norm);
 
 		v_vertices = boids.getAllVert();
 		GLfloat* vertices = &v_vertices[0];
@@ -162,7 +183,9 @@ int main()
 		// Take care of all GLFW events
 		glfwPollEvents();
 
+
 	}
+
 
 
 
@@ -176,6 +199,8 @@ int main()
 	glfwTerminate();
 	return 0;
 }
+
+
 
 /*TODO
 1. figure out better rendering system

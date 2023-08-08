@@ -9,7 +9,7 @@ public:
 
 	std::vector<GLfloat> getAllVert();
 	void addBoid(vector_2 v);
-	void updateBoids();
+	void updateBoids(double xpos, double ypos);
 
 private:
 	std::vector<Boid*> boids;

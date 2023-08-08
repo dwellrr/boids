@@ -30,8 +30,8 @@ std::vector<GLfloat> boidManager::getAllVert() {
 	return ver;
 }
 
-void boidManager::updateBoids() {
+void boidManager::updateBoids(double xpos, double ypos) {
 	for (Boid* boid : this->boids) {
-		boid->update();
+		boid->update(xpos, ypos);
 	}
 }
