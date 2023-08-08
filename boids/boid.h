@@ -10,9 +10,9 @@
 class AI;
 
 struct vector_2 {
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 };
 class Boid {
 public:
@@ -20,12 +20,17 @@ public:
 	Boid(float x, float y);
 	Boid(vector_2 v);
 
-	float SPEED = 0.0005f;
-	float SIZE = 0.008f;
+	double SPEED = 1;
+	float SIZE = 0.005f;
+
+	double vx = 1;
+	double vy = 1;
 
 	vector_2 getPos();
 	void setPos(vector_2 _pos);
-	std::vector<GLfloat> getVertices();
+	std::vector<GLfloat> getVertices(int width, int height);
+
+	void setAI(char ai, std::vector<Boid*> boids);
 
 	void update(double xpos, double ypos);
 

@@ -7,12 +7,14 @@ public:
 	boidManager(Boid *firstBoid);
 	boidManager(std::vector<vector_2> _boids);
 
-	std::vector<GLfloat> getAllVert();
+	std::vector<GLfloat> getAllVert(int width, int height);
 	void addBoid(vector_2 v);
 	void updateBoids(double xpos, double ypos);
+	void setAI(char ai, std::vector<Boid*> boids);
+	std::vector<Boid*> boids;
 
 private:
-	std::vector<Boid*> boids;
+	
 
 	
 };
