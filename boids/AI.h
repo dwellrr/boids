@@ -28,12 +28,12 @@ private:
     std::vector<Boid*> allBoids;
 
     double visual_range = 100;
-    double turnfactor = 0.2;
+    double turnfactor = 5;
     double protectedRange = 25;
-    double centeringfactor = 0.00003;
-    double avoidfactor = 0.0008;
-    double matchingfactor = 0.006;
-    double maxspeed = 1;
-    double minspeed = 0.1;
+    double centeringfactor = 0.001;
+    double avoidfactor = 0.008;
+    double matchingfactor = 0.04;
+    double maxspeed = 10;
+    double minspeed = 1;
 };
 #endif

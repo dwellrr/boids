@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include "boidManager.h"
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #include <iostream> 
 
@@ -366,6 +368,8 @@ int main()
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindVertexArray(0);
 
+	const double target_framerate = 60.0;
+	const double time_per_frame = 1.0 / target_framerate;
 
 
 	double x_norm, y_norm;
@@ -376,6 +380,7 @@ int main()
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
+		auto start_time = std::chrono::high_resolution_clock::now();
 
 		glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -387,6 +392,12 @@ int main()
 		v_vertices = boids.getAllVert(window_width, window_height);
 		GLfloat* vertices = &v_vertices[0];
 
+		auto end_time = std::chrono::high_resolution_clock::now();
+		auto frame_duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+		double frame_time = frame_duration.count() / 1000000.0; // Convert to seconds
+
+		
+
 		glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
 
 		// Specify the color of the background
@@ -397,6 +408,12 @@ int main()
 		glUseProgram(shaderProgram);
 		// Bind the VAO so OpenGL knows to use it
 		glBindVertexArray(VAO);
+
+		// Adjust time to achieve the fixed framerate
+		if (frame_time < time_per_frame) {
+			std::this_thread::sleep_for(std::chrono::duration<double>(time_per_frame - frame_time));
+		}
+
 		// Draw the triangle using the GL_TRIANGLES primitive
 		glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
 		// Swap the back buffer with the front buffer
