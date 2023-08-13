@@ -15,6 +15,14 @@ boidManager::boidManager(std::vector<vector_2> _boids)
 	}
 }
 
+boidManager::boidManager(int n) {
+	vector_2 v = { 100, 100, 0 };
+	for (int i = 0; i < n; i++)
+	{
+		addBoid(v);
+	}
+}
+
 void boidManager::addBoid(vector_2 v) {
 	Boid *boid = new Boid(v);
 	this->boids.push_back(boid);

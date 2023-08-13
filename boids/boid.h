@@ -26,8 +26,8 @@ public:
 	GLfloat SPEED = 1;
 	GLfloat SIZE = 0.005f;
 
-	GLfloat vx = 1;
-	GLfloat vy = 1;
+	GLfloat vx = 0;
+	GLfloat vy = 0;
 
 	vector_2 getPos();
 	void setPos(vector_2 _pos);

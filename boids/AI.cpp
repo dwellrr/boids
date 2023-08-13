@@ -20,6 +20,8 @@ void CursorFollowingAI::update(Boid& boid, double xpos, double ypos) {
 }
 
 BoidFollowingAI::BoidFollowingAI(std::vector<Boid*> allBoids) : allBoids(allBoids) {
+    std::mt19937 gen(rd()); // Standard Mersenne Twister engine
+    std::uniform_real_distribution<float> dist(-10.0, 10.0);
 
 }
 
@@ -54,6 +56,10 @@ void BoidFollowingAI::update(Boid& boid, double xpos, double ypos) {
                     // If so, calculate difference in x / y - coordinates to nearfield boid
                     close_dx += boid.getPos().x - otherBoid->getPos().x;
                     close_dy += boid.getPos().y - otherBoid->getPos().y;
+                    if (close_dx == 0 and close_dy == 0) {
+                        close_dx = dist(gen);
+                        close_dy = dist(gen);
+                    }
                 }
                 // If not in protected range, is the boid in the visual range ?
                 else if (squared_distance < (visual_range * visual_range)) {

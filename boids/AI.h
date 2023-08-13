@@ -1,5 +1,6 @@
 #pragma once
 #include "boid.h"
+#include <random>
 
 #ifndef AI_H
 #define AI_H
@@ -35,5 +36,9 @@ private:
     double matchingfactor = 0.04;
     double maxspeed = 10;
     double minspeed = 1;
+
+    std::random_device rd;  // Obtain a random seed from the operating system
+    std::mt19937 gen;
+    std::uniform_real_distribution<float> dist;
 };
 #endif

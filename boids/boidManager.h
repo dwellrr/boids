@@ -6,6 +6,7 @@ public:
 	boidManager();
 	boidManager(Boid *firstBoid);
 	boidManager(std::vector<vector_2> _boids);
+	boidManager(int n);
 
 	std::vector<GLfloat> getAllVert(int width, int height);
 	void addBoid(vector_2 v);
