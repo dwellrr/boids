@@ -24,7 +24,7 @@ public:
 	Boid(vector_2 v);
 
 	GLfloat SPEED = 1;
-	GLfloat SIZE = 0.005f;
+	GLfloat SIZE = 0.004f;
 
 	GLfloat vx = 0;
 	GLfloat vy = 0;
