@@ -34,6 +34,7 @@ void boidManager::updateBoids(double xpos, double ypos) {
 	for (Boid* boid : this->boids) {
 		boid->update(xpos, ypos);
 	}
+	
 }
 
 void boidManager::setAI(char ai, std::vector<Boid*> boids) {

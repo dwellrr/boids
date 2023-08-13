@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "AI.h"
+#include <cmath>
+#include <tgmath.h> 
+#include <iostream>
 
 #pragma once
 #ifndef BOID_H
@@ -20,14 +23,16 @@ public:
 	Boid(float x, float y);
 	Boid(vector_2 v);
 
-	double SPEED = 1;
-	float SIZE = 0.005f;
+	GLfloat SPEED = 1;
+	GLfloat SIZE = 0.005f;
 
-	double vx = 1;
-	double vy = 1;
+	GLfloat vx = 1;
+	GLfloat vy = 1;
 
 	vector_2 getPos();
 	void setPos(vector_2 _pos);
+	std::vector<GLfloat> rotateVec(std::vector <GLfloat> vert);
+	std::vector<GLfloat> makeAbsoluteVec(std::vector <GLfloat> vert, float x, float y);
 	std::vector<GLfloat> getVertices(int width, int height);
 
 	void setAI(char ai, std::vector<Boid*> boids);

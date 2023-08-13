@@ -27,10 +27,10 @@ BoidFollowingAI::BoidFollowingAI(std::vector<Boid*> allBoids) : allBoids(allBoid
 void BoidFollowingAI::update(Boid& boid, double xpos, double ypos) {
     // Logic for birds to follow boids behavior
     // Example: bird.position = calculateNewBoidPosition(bird);
-
+    double xpos_avg = 0, ypos_avg = 0, xvel_avg = 0, yvel_avg = 0, neighboring_boids = 0, close_dx = 0, close_dy = 0;
     // Access other boids in the behavior
     for (Boid* otherBoid : allBoids) {
-        double xpos_avg = 0, ypos_avg = 0, xvel_avg = 0, yvel_avg = 0, neighboring_boids = 0, close_dx = 0, close_dy = 0;
+        
         if (otherBoid != &boid) {
             // Apply boids algorithm to update the bird's position
             // Example: bird.position = calculateBoidsBehavior(bird, *otherBird);
@@ -69,6 +69,7 @@ void BoidFollowingAI::update(Boid& boid, double xpos, double ypos) {
                 }
             }
         }
+    }
             // If there were any boids in the visual range . . .
         if (neighboring_boids > 0) {
 
@@ -111,10 +112,12 @@ void BoidFollowingAI::update(Boid& boid, double xpos, double ypos) {
         if (boid.SPEED < minspeed and boid.SPEED != 0) {
             boid.vx = (boid.vx / boid.SPEED) * minspeed;
             boid.vy = (boid.vy / boid.SPEED) * minspeed;
+            boid.SPEED = minspeed;
         }
         if (boid.SPEED > maxspeed) {
             boid.vx = (boid.vx / boid.SPEED) * maxspeed;
             boid.vy = (boid.vy / boid.SPEED) * maxspeed;
+            boid.SPEED = maxspeed;
         }
         if (boid.SPEED == 0) {
             boid.SPEED = minspeed;
@@ -122,5 +125,5 @@ void BoidFollowingAI::update(Boid& boid, double xpos, double ypos) {
 
         // Update boid's position
         boid.setPos({ boid.getPos().x + boid.vx, boid.getPos().y + boid.vy });
-    }
+    
 }

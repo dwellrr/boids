@@ -30,10 +30,10 @@ private:
     double visual_range = 100;
     double turnfactor = 0.2;
     double protectedRange = 25;
-    double centeringfactor = 0.00000003;
-    double avoidfactor = 0.000008;
-    double matchingfactor = 0.0006;
-    double maxspeed = 0.012;
-    double minspeed = 0.005;
+    double centeringfactor = 0.00003;
+    double avoidfactor = 0.0008;
+    double matchingfactor = 0.006;
+    double maxspeed = 1;
+    double minspeed = 0.1;
 };
 #endif
