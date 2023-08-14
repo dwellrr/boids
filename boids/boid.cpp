@@ -97,6 +97,29 @@ std::vector<GLfloat> Boid::getVertices(int width, int height) {
 	return vertices;
 }
 
+std::vector<GLfloat> Boid::getBoundVertices(int width, int height) {
+
+	float x_norm = pos.x / (width / 2) - 1;
+	float y_norm = -(pos.y / (height / 2) - 1);
+	GLfloat boundBox_x = boundBoxPx / (width / 2);
+	GLfloat boundBox_y = -(boundBoxPx / (height / 2));
+
+	std::vector <GLfloat> vertices = {
+		x_norm - boundBox_x, y_norm - boundBox_y, 0.0f,
+		x_norm - boundBox_x, y_norm + boundBox_y, 0.0f,
+		x_norm - boundBox_x, y_norm + boundBox_y, 0.0f,
+		x_norm + boundBox_x, y_norm + boundBox_y, 0.0f,
+		x_norm + boundBox_x, y_norm + boundBox_y, 0.0f,
+		x_norm + boundBox_x, y_norm - boundBox_y, 0.0f,
+		x_norm + boundBox_x, y_norm - boundBox_y, 0.0f,
+		x_norm - boundBox_x, y_norm - boundBox_y, 0.0f
+	};
+
+	return vertices;
+
+}
+
+
 void Boid::setAI(char ai, std::vector<Boid*> boids) {
 	if (ai == 'b') {
 		this->ai = new BoidFollowingAI(boids);

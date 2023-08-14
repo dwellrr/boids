@@ -29,11 +29,14 @@ public:
 	GLfloat vx = 0;
 	GLfloat vy = 0;
 
+	GLfloat boundBoxPx = 40;
+
 	vector_2 getPos();
 	void setPos(vector_2 _pos);
 	std::vector<GLfloat> rotateVec(std::vector <GLfloat> vert);
 	std::vector<GLfloat> makeAbsoluteVec(std::vector <GLfloat> vert, float x, float y);
 	std::vector<GLfloat> getVertices(int width, int height);
+	std::vector<GLfloat> getBoundVertices(int width, int height);
 
 	void setAI(char ai, std::vector<Boid*> boids);
 

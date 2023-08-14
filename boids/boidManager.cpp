@@ -38,6 +38,16 @@ std::vector<GLfloat> boidManager::getAllVert(int width, int height) {
 	return ver;
 }
 
+std::vector<GLfloat> boidManager::getBoundVertices(int width, int height) {
+	std::vector<GLfloat> ver = {};
+	for (Boid* i : this->boids)
+	{
+		std::vector<GLfloat> boid_ver = i->getBoundVertices(width, height);
+		ver.insert(ver.end(), boid_ver.begin(), boid_ver.end());
+	}
+	return ver;
+}
+
 void boidManager::updateBoids(double xpos, double ypos) {
 	for (Boid* boid : this->boids) {
 		boid->update(xpos, ypos);
