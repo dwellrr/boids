@@ -38,7 +38,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 int main()
 {	
-	boidManager boids(200);
+	boidManager boids(300);
 
 	// (1) GLFW: Initialise & Configure
 	// -----------------------------------------
@@ -59,7 +59,7 @@ int main()
 
 	double xpos, ypos;
 
-	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "GLFW Test Window", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Boids", NULL, NULL);
 	// GLFWwindow* window = glfwCreateWindow(window_width, window_height, "Drawing Basic Shapes - Buffer Objects & Shaders", glfwGetPrimaryMonitor(), NULL); // Full Screen Mode ("Alt" + "F4" to Exit!)
 
 	if (!window)
@@ -145,7 +145,10 @@ int main()
 	//glBindVertexArray(0);
 
 	const double target_framerate = 60.0;
-	const double time_per_frame = 1.0 / target_framerate;
+	const double maxPeriod = 1.0 / target_framerate;
+	auto start = std::chrono::steady_clock::now();
+	int frames = 0;
+	double lastTime = 0.0;
 
 
 	double x_norm, y_norm;
@@ -156,47 +159,42 @@ int main()
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
-		auto start_time = std::chrono::high_resolution_clock::now();
+		double time = glfwGetTime();
+		double deltaTime = time - lastTime;
 
-		glfwGetCursorPos(window, &xpos, &ypos);
+		if (deltaTime >= maxPeriod) {
+			lastTime = time;
+			// code here gets called with max FPS
+			glfwGetCursorPos(window, &xpos, &ypos);
 
 
-		boids.updateBoids(xpos, ypos);
-		//x_norm = xpos / (window_width / 2) - 1;
-		//y_norm = -(ypos / (window_height / 2) - 1);
+			boids.updateBoids(xpos, ypos);
+			//x_norm = xpos / (window_width / 2) - 1;
+			//y_norm = -(ypos / (window_height / 2) - 1);
 
-		v_vertices = boids.getAllVert(window_width, window_height);
-		GLfloat* vertices = &v_vertices[0];
+			v_vertices = boids.getAllVert(window_width, window_height);
+			GLfloat* vertices = &v_vertices[0];
 
-		auto end_time = std::chrono::high_resolution_clock::now();
-		auto frame_duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-		double frame_time = frame_duration.count() / 1000000.0; // Convert to seconds
+			glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
 
-		
+			// Specify the color of the background
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			// Clean the back buffer and assign the new color to it
+			glClear(GL_COLOR_BUFFER_BIT);
+			// Tell OpenGL which Shader Program we want to use
+			glUseProgram(shaderProgram);
+			// Bind the VAO so OpenGL knows to use it
+			glBindVertexArray(VAO);
 
-		glBufferData(GL_ARRAY_BUFFER, v_vertices.size() * sizeof(GLfloat), vertices, GL_STREAM_DRAW);
+			// Draw the triangle using the GL_TRIANGLES primitive
+			glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
+			glfwSwapBuffers(window);
+			// Take care of all GLFW events
 
-		// Specify the color of the background
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT);
-		// Tell OpenGL which Shader Program we want to use
-		glUseProgram(shaderProgram);
-		// Bind the VAO so OpenGL knows to use it
-		glBindVertexArray(VAO);
+			std::cout << 1 / deltaTime << std::endl;
 
-		// Adjust time to achieve the fixed framerate
-		if (frame_time < time_per_frame) {
-			std::this_thread::sleep_for(std::chrono::duration<double>(time_per_frame - frame_time));
+			glfwPollEvents();
 		}
-
-		// Draw the triangle using the GL_TRIANGLES primitive
-		glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
-		// Swap the back buffer with the front buffer
-		glfwSwapBuffers(window);
-		// Take care of all GLFW events
-		glfwPollEvents();
-
 
 	}
 
