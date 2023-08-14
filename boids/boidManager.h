@@ -1,5 +1,6 @@
 #include "boid.h"
 #include <vector>
+#include "quadTree.h"
 
 class boidManager {
 public:
@@ -10,10 +11,14 @@ public:
 
 	std::vector<GLfloat> getAllVert(int width, int height);
 	std::vector<GLfloat> getBoundVertices(int width, int height);
+	std::vector<GLfloat> getQuadVert(int width, int height);
+
 	void addBoid(vector_2 v);
 	void updateBoids(double xpos, double ypos);
 	void setAI(char ai, std::vector<Boid*> boids);
 	std::vector<Boid*> boids;
+	Rectangle screen = Rectangle(0, 0, 1, 1);
+	QuadTree quad = QuadTree(screen, 2);
 
 private:
 	

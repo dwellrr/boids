@@ -21,6 +21,11 @@ boidManager::boidManager(int n) {
 	{
 		addBoid(v);
 	}
+
+	for (Boid* i : boids)
+	{
+		quad.insert(*i);
+	}
 }
 
 void boidManager::addBoid(vector_2 v) {
@@ -48,9 +53,16 @@ std::vector<GLfloat> boidManager::getBoundVertices(int width, int height) {
 	return ver;
 }
 
+std::vector<GLfloat> boidManager::getQuadVert(int width, int height)
+{
+	return quad.getLines(width, height);
+}
+
 void boidManager::updateBoids(double xpos, double ypos) {
+	quad = QuadTree(screen, 2);
 	for (Boid* boid : this->boids) {
 		boid->update(xpos, ypos);
+		quad.insert(*boid);
 	}
 	
 }
