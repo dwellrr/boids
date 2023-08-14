@@ -134,13 +134,17 @@ std::vector<GLfloat> QuadTree::getLines(int width, int height)
 		x_norm - boundBox_x, y_norm - boundBox_y, 0.0f
 	};
 
-	vertices.insert(vertices.end(), northEast->getLines(width, height).begin(), northEast->getLines(width, height).end());
 
 	if (this->divided) {
-		vertices.insert(vertices.end(), northEast->getLines(width, height).begin(), northEast->getLines(width, height).end());
-		vertices.insert(vertices.end(), northWest->getLines(width, height).begin(), northWest->getLines(width, height).end());
-		vertices.insert(vertices.end(), southEast->getLines(width, height).begin(), southEast->getLines(width, height).end());
-		vertices.insert(vertices.end(), southWest->getLines(width, height).begin(), southWest->getLines(width, height).end());
+		std::vector<GLfloat> subs_ne = northEast->getLines(width, height);
+		std::vector<GLfloat> subs_nw = northWest->getLines(width, height);
+		std::vector<GLfloat> subs_se = southEast->getLines(width, height);
+		std::vector<GLfloat> subs_sw = southWest->getLines(width, height);
+
+		vertices.insert(vertices.end(), subs_ne.begin(), subs_ne.end());
+		vertices.insert(vertices.end(), subs_nw.begin(), subs_nw.end());
+		vertices.insert(vertices.end(), subs_se.begin(), subs_se.end());
+		vertices.insert(vertices.end(), subs_sw.begin(), subs_sw.end());
 	}
 	return vertices;
 }

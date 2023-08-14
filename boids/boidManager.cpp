@@ -16,6 +16,9 @@ boidManager::boidManager(std::vector<vector_2> _boids)
 }
 
 boidManager::boidManager(int n) {
+
+	Rectangle screen = Rectangle(975, 540, 975, 540);
+	QuadTree quad = QuadTree(screen, 2);
 	vector_2 v = { 100, 100, 0 };
 	for (int i = 0; i < n; i++)
 	{

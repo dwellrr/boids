@@ -17,7 +17,7 @@ public:
 	void updateBoids(double xpos, double ypos);
 	void setAI(char ai, std::vector<Boid*> boids);
 	std::vector<Boid*> boids;
-	Rectangle screen = Rectangle(0, 0, 1, 1);
+	Rectangle screen = Rectangle(975, 540, 975, 540);
 	QuadTree quad = QuadTree(screen, 2);
 
 private:

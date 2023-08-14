@@ -38,7 +38,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 int main()
 {	
-	boidManager boids(50);
+	boidManager boids(500);
 
 	// (1) GLFW: Initialise & Configure
 	// -----------------------------------------
@@ -114,9 +114,14 @@ int main()
 	bounds_vertices = boids.getBoundVertices(window_width, window_height);
 	GLfloat* lines = &bounds_vertices[0];
 
+	std::vector<GLfloat> quads_ver;
+	quads_ver = boids.getQuadVert(window_width, window_height);
+	GLfloat* quads_ref = &quads_ver[0];
+
 	std::vector<GLfloat> all_vertices;
 	all_vertices = v_vertices;
 	all_vertices.insert(all_vertices.end(), bounds_vertices.begin(), bounds_vertices.end());
+	all_vertices.insert(all_vertices.end(), quads_ver.begin(), quads_ver.end());
 	GLfloat* all_vertices_ptr = &all_vertices[0];
 
 	// Vertices coordinates
@@ -142,7 +147,7 @@ int main()
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// Introduce the vertices into the VBO
-	glBufferData(GL_ARRAY_BUFFER, (v_vertices.size() + bounds_vertices.size()) * sizeof(GLfloat), all_vertices_ptr, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (v_vertices.size() + bounds_vertices.size() + quads_ver.size()) * sizeof(GLfloat), all_vertices_ptr, GL_STREAM_DRAW);
 
 	// Configure the Vertex Attribute so that OpenGL knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -188,11 +193,15 @@ int main()
 			bounds_vertices = boids.getBoundVertices(window_width, window_height);
 			lines = &bounds_vertices[0];
 
+			quads_ver = boids.getQuadVert(window_width, window_height);
+			quads_ref = &quads_ver[0];
+
 			all_vertices = v_vertices;
 			all_vertices.insert(all_vertices.end(), bounds_vertices.begin(), bounds_vertices.end());
+			all_vertices.insert(all_vertices.end(), quads_ver.begin(), quads_ver.end());
 			all_vertices_ptr = &all_vertices[0];
 
-			glBufferData(GL_ARRAY_BUFFER, (v_vertices.size() + bounds_vertices.size()) * sizeof(GLfloat), all_vertices_ptr, GL_STREAM_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, (v_vertices.size() + bounds_vertices.size() + quads_ver.size()) * sizeof(GLfloat), all_vertices_ptr, GL_STREAM_DRAW);
 
 			// Specify the color of the background
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -205,7 +214,8 @@ int main()
 
 			// Draw the triangle using the GL_TRIANGLES primitive
 			glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
-			glDrawArrays(GL_LINES, v_vertices.size() / 3, bounds_vertices.size() / 3);
+			//glDrawArrays(GL_LINES, v_vertices.size() / 3, bounds_vertices.size() / 3);
+			glDrawArrays(GL_LINES, v_vertices.size() / 3 + bounds_vertices.size() / 3, quads_ver.size() / 3);
 			glfwSwapBuffers(window);
 			// Take care of all GLFW events
 
