@@ -28,14 +28,14 @@ public:
 private:
     std::vector<Boid*> allBoids;
 
-    double visual_range = 50;
+    double visual_range = 40;
     double turnfactor = 5;
-    double protectedRange = 15;
-    double centeringfactor = 0.002;
+    double protectedRange = 10;
+    double centeringfactor = 0.007;
     double avoidfactor = 0.05;
     double matchingfactor = 0.04;
-    double maxspeed = 5;
-    double minspeed = 0.5;
+    double maxspeed = 3;
+    double minspeed = 0.3;
 
     std::random_device rd;  // Obtain a random seed from the operating system
     std::mt19937 gen;
