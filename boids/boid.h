@@ -40,7 +40,7 @@ public:
 
 	void setAI(char ai, std::vector<Boid*> boids);
 
-	void update(double xpos, double ypos);
+	void update(std::vector<Boid*> allBoids, double xpos, double ypos);
 	vector_2 pos;
 
 protected:

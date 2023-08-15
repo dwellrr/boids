@@ -18,7 +18,7 @@ public:
 	void setAI(char ai, std::vector<Boid*> boids);
 	std::vector<Boid*> boids;
 	Rectangle screen = Rectangle(975, 540, 975, 540);
-	QuadTree quad = QuadTree(screen, 2);
+	QuadTree quad = QuadTree(screen, 2, 5);
 
 private:
 	

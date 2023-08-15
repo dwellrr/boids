@@ -122,13 +122,13 @@ std::vector<GLfloat> Boid::getBoundVertices(int width, int height) {
 
 void Boid::setAI(char ai, std::vector<Boid*> boids) {
 	if (ai == 'b') {
-		this->ai = new BoidFollowingAI(boids);
+		this->ai = new BoidFollowingAI();
 	}
 	else {
 		this->ai = new CursorFollowingAI();
 	}
 }
 
-void Boid::update(double xpos, double ypos) {
-	ai->update(*this, xpos,  ypos);
+void Boid::update(std::vector<Boid*> allBoids, double xpos, double ypos) {
+	ai->update(*this, allBoids, xpos,  ypos);
 }

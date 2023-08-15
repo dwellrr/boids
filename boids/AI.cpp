@@ -3,7 +3,7 @@
 #include <iostream> 
 
 
-void CursorFollowingAI::update(Boid& boid, double xpos, double ypos) {
+void CursorFollowingAI::update(Boid& boid, std::vector<Boid*> allBoids, double xpos, double ypos) {
     // Logic for birds to follow the cursor
     // Example: bird.position = getCursorPosition();
     //vector_2 newPos = boid.getPos();
@@ -19,14 +19,14 @@ void CursorFollowingAI::update(Boid& boid, double xpos, double ypos) {
     boid.setPos(newPos);
 }
 
-BoidFollowingAI::BoidFollowingAI(std::vector<Boid*> allBoids) : allBoids(allBoids) {
+BoidFollowingAI::BoidFollowingAI() {
     std::mt19937 gen(rd()); // Standard Mersenne Twister engine
     std::uniform_real_distribution<float> dist(-10.0, 10.0);
 
 }
 
 
-void BoidFollowingAI::update(Boid& boid, double xpos, double ypos) {
+void BoidFollowingAI::update(Boid& boid, std::vector<Boid*> allBoids, double xpos, double ypos) {
     // Logic for birds to follow boids behavior
     // Example: bird.position = calculateNewBoidPosition(bird);
     double xpos_avg = 0, ypos_avg = 0, xvel_avg = 0, yvel_avg = 0, neighboring_boids = 0, close_dx = 0, close_dy = 0;

@@ -21,6 +21,11 @@ QuadTree::~QuadTree() {
 	delete northEast;
 	delete southWest;
 	delete southEast;
+	found.~vector();
+	found_ne.~vector();
+	found_nw.~vector();
+	found_se.~vector();
+	found_sw.~vector();
 }
 
 bool Rectangle::contains(const Boid& boid) const
@@ -39,26 +44,32 @@ return !(range.x - range.w > this->x + this->w ||
 		range.y + range.h < this->y - this->h);
 }
 
-QuadTree::QuadTree(const Rectangle& boundary, int capacity)
+QuadTree::QuadTree(const Rectangle& boundary, int capacity, int depth)
 {
 	this->boundary = boundary;
 	this->capacity = capacity;
-}
+	this->depth = depth;
+}								 
 
-bool QuadTree::insert(const Boid& boid)
+bool QuadTree::insert(Boid *boid)
 {
-	if (!this->boundary.contains(boid)) {
+	if (!this->boundary.contains(*boid)) {
 		return false;
 	}
-
-	if (this->boids.size() < this->capacity) {
+	if (depth <= 0) {
+		this->boids.push_back(boid);
+		return true; // Stop splitting at the specified depth limit
+	}
+	if ((this->boids.size() < this->capacity) && (!this->divided)) {
 		this->boids.push_back(boid);
 		return true;
 	}
-
+	
 	if (!this->divided) {
 		this->subdivide();
 	}
+
+
 
 	return(
 		this->northEast->insert(boid) ||
@@ -70,50 +81,73 @@ bool QuadTree::insert(const Boid& boid)
 
 void QuadTree::subdivide()
 {
+	//if (depth <= 0) {
+		//return; // Stop splitting at the specified depth limit
+	//}
+
 	float x = this->boundary.x;
 	float y = this->boundary.y;
 	float w = this->boundary.w / 2;
 	float h = this->boundary.h / 2;
 
 	Rectangle ne = Rectangle(x + w, y - h, w, h);
-	this->northEast = new QuadTree(ne, this->capacity);
+	this->northEast = new QuadTree(ne, this->capacity, depth - 1);
 
 	Rectangle nw = Rectangle(x - w, y - h, w, h);
-	this->northWest = new QuadTree(nw, this->capacity);
+	this->northWest = new QuadTree(nw, this->capacity, depth - 1);
 
 	Rectangle se = Rectangle(x + w, y + h, w, h);
-	this->southEast = new QuadTree(se, this->capacity);
+	this->southEast = new QuadTree(se, this->capacity, depth - 1);
 
 	Rectangle sw = Rectangle(x - w, y + h, w, h);
-	this->southWest = new QuadTree(sw, this->capacity);
+	this->southWest = new QuadTree(sw, this->capacity, depth - 1);
+	for (Boid* i : this->boids)
+	{
+		this->northEast->insert(i);
+		this->northWest->insert(i);
+		this->southWest->insert(i);
+		this->southEast->insert(i);
+	}
+
+	this->boids.erase(this->boids.begin(), this->boids.end());
 
 	this->divided = true;
 }
 
-std::vector<Boid> QuadTree::query(const Rectangle& range, std::vector<Boid>& found)
+std::vector<Boid*> QuadTree::query(const Rectangle& range)
 {
-	if (&found == NULL) {
-		found = std::vector<Boid>();
-	}
 
 	if (!range.intersects(this->boundary)) {
-		return found;
-	}
-
-	for (Boid p : this->boids) {
-		if (range.contains(p)) {
-			found.push_back(p);
-		}
+		return std::vector<Boid*>();
 	}
 
 	if (this->divided) {
-		this->northWest->query(range, found);
-		this->northEast->query(range, found);
-		this->southWest->query(range, found);
-		this->southEast->query(range, found);
+		found_ne = this->northWest->query(range);
+		found.insert(found.end(), found_ne.begin(), found_ne.end());
+		found_ne.clear();
+		found_nw = this->northEast->query(range);
+		found.insert(found.end(), found_nw.begin(), found_nw.end());
+		found_nw.clear();
+		found_se = this->southWest->query(range);
+		found.insert(found.end(), found_se.begin(), found_se.end());
+		found_se.clear();
+		found_sw = this->southEast->query(range);
+		found.insert(found.end(), found_sw.begin(), found_sw.end());
+		found_sw.clear();
+	}
+	else {
+		for (Boid* p : this->boids) {
+			if (range.contains(*p)) {
+				found.push_back(p);
+			}
+		}
 	}
 
-	return found;
+
+	std::vector<Boid*> res = found;
+	found.clear();
+
+	return res;
 }
 
 std::vector<GLfloat> QuadTree::getLines(int width, int height)

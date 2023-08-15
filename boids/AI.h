@@ -11,22 +11,21 @@ class Boid;
 class AI
 {
 public:
-	virtual void update(Boid &boid, double xpos, double ypos) = 0;
+	virtual void update(Boid &boid, std::vector<Boid*> allBoids, double xpos, double ypos) = 0;
 };
 
 class CursorFollowingAI : public AI {
 public:
-    void update(Boid& boid, double xpos, double ypos) override;
+    void update(Boid& boid, std::vector<Boid*> allBoids, double xpos, double ypos) override;
 };
 
 class BoidFollowingAI : public AI {
 public:
-    BoidFollowingAI(std::vector<Boid*> allBoids);
+    BoidFollowingAI();
 
-    void update(Boid& boid, double xpos, double ypos) override;
+    void update(Boid& boid, std::vector<Boid*> allBoids, double xpos, double ypos) override;
 
 private:
-    std::vector<Boid*> allBoids;
 
     double visual_range = 40;
     double turnfactor = 5;
