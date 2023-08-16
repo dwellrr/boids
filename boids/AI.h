@@ -27,12 +27,12 @@ public:
 
 private:
 
-    double visual_range = 40;
+    double visual_range = 30;
     double turnfactor = 5;
-    double protectedRange = 10;
-    double centeringfactor = 0.007;
-    double avoidfactor = 0.05;
-    double matchingfactor = 0.04;
+    double protectedRange = 8;
+    double centeringfactor = 0.009;
+    double avoidfactor = 0.07;
+    double matchingfactor = 0.01;
     double maxspeed = 3;
     double minspeed = 0.3;
 
