@@ -43,6 +43,7 @@ public:
 
     void query(const Rectangle& range, std::vector<Boid*>& result);
     std::vector<GLfloat> getLines(int width, int height);
+    std::vector<GLfloat> getColors();
 
 
 

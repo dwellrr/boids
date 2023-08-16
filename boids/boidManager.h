@@ -12,6 +12,8 @@ public:
 	std::vector<GLfloat> getAllVert(int width, int height);
 	std::vector<GLfloat> getBoundVertices(int width, int height);
 	std::vector<GLfloat> getQuadVert(int width, int height);
+	std::vector<GLfloat> getBoidColors();
+	std::vector<GLfloat> getBoundColors();
 
 	void addBoid(vector_2 v);
 	void updateBoids(double xpos, double ypos);

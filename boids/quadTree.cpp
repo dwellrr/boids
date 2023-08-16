@@ -165,3 +165,81 @@ std::vector<GLfloat> QuadTree::getLines(int width, int height)
 	return vertices;
 }
 
+std::vector<GLfloat> QuadTree::getColors()
+{
+	GLfloat x, y, z;
+	std::vector <GLfloat> colors;
+
+	if (depth == 0) {
+		x = 253.0f / 255.0f;
+		y = 231.0f / 255.0f;
+		z = 37.0f / 255.0f;
+	}
+	else if (depth == 1) {
+		x = 160.0f / 255.0f;
+		y = 218.0f / 255.0f;
+		z = 57.0f / 255.0f;
+	}
+	else if (depth == 2) {
+		x = 74.0f / 255.0f;
+		y = 193.0f / 255.0f;
+		z = 109.0f / 255.0f;
+	}
+	else if (depth == 3) {
+		x = 31.0f / 255.0f;
+		y = 161.0f / 255.0f;
+		z = 135.0f / 255.0f;
+	}
+	else if (depth == 4) {
+		x = 39.0f / 255.0f;
+		y = 127.0f / 255.0f;
+		z = 142.0f / 255.0f;
+	}
+	else if (depth == 5) {
+		x = 54.0f / 255.0f;
+		y = 92.0f / 255.0f;
+		z = 141.0f / 255.0f;
+	}
+	else if (depth == 6) {
+		x = 70.0f / 255.0f;
+		y = 50.0f / 255.0f;
+		z = 126.0f / 255.0f;
+	}
+	else if (depth == 7) {
+		x = 70.0f / 255.0f;
+		y = 50.0f / 255.0f;
+		z = 126.0f / 255.0f;
+	}
+	else {
+		// Default color values
+		x = 1.0f;  // White
+		y = 1.0f;
+		z = 1.0f;
+	}
+
+
+	colors = {
+		x, y, z,
+		x, y, z,
+		x, y, z,
+		x, y, z,
+		x, y, z,
+		x, y, z,
+		x, y, z,
+		x, y, z
+	};
+
+	if (this->divided) {
+		std::vector<GLfloat> subs_ne = northEast->getColors();
+		std::vector<GLfloat> subs_nw = northWest->getColors();
+		std::vector<GLfloat> subs_se = southEast->getColors();
+		std::vector<GLfloat> subs_sw = southWest->getColors();
+
+		colors.insert(colors.end(), subs_ne.begin(), subs_ne.end());
+		colors.insert(colors.end(), subs_nw.begin(), subs_nw.end());
+		colors.insert(colors.end(), subs_se.begin(), subs_se.end());
+		colors.insert(colors.end(), subs_sw.begin(), subs_sw.end());
+	}
+	return colors;
+}
+

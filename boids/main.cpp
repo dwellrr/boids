@@ -10,16 +10,20 @@
 // Vertex Shader source code
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aColor;\n" // Add this line
+"out vec3 fragmentColor;\n" // Declare the output variable
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   fragmentColor = aColor;\n" // Assign color to the output variable
 "}\0";
 //Fragment Shader source code
 const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
+"in vec3 fragmentColor;\n"
+"out vec3 color;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
+"   color = fragmentColor;"
 "}\n\0";
 
 //std::vector<vector_2> boidCenters{
@@ -124,6 +128,14 @@ int main()
 	all_vertices.insert(all_vertices.end(), quads_ver.begin(), quads_ver.end());
 	GLfloat* all_vertices_ptr = &all_vertices[0];
 
+	std::vector<GLfloat> q_colors;
+	std::vector<GLfloat> box_colors;
+	std::vector<GLfloat> b_colors;
+	std::vector<GLfloat> all_colors;
+	all_colors = q_colors;
+	all_colors.insert(all_colors.end(), box_colors.begin(), box_colors.end());
+	all_colors.insert(all_colors.end(), b_colors.begin(), b_colors.end());
+
 	// Vertices coordinates
 	/*GLfloat vertices[] =
 	{
@@ -135,24 +147,33 @@ int main()
 	
 
 	// Create reference containers for the Vartex Array Object and the Vertex Buffer Object
-	GLuint VAO, VBO;
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
 
 	// Generate the VAO and VBO with only 1 object each
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
 
 	// Make the VAO the current Vertex Array Object by binding it
-	glBindVertexArray(VAO);
-
 	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// Introduce the vertices into the VBO
+
+	GLuint vertexbuffer;
+	glGenBuffers(1, &vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, (v_vertices.size() + bounds_vertices.size() + quads_ver.size()) * sizeof(GLfloat), all_vertices_ptr, GL_STREAM_DRAW);
 
 	// Configure the Vertex Attribute so that OpenGL knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	// Enable the Vertex Attribute so that OpenGL knows to use it
 	glEnableVertexAttribArray(0);
+
+	GLuint colorBuffer;
+	glGenBuffers(1, &colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, all_colors.size() * sizeof(GLfloat), all_colors.data(), GL_STREAM_DRAW);
+
+	
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(1);
 
 	// Bind both the VBO and VAO to 0 so that we don't accidentally modify the VAO and VBO we created
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -170,6 +191,8 @@ int main()
 	boids.setAI('b', boids.boids);
 	//boids.addBoid({ 100, 100, 0 });
 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -181,11 +204,9 @@ int main()
 			// code here gets called with max FPS
 			glfwGetCursorPos(window, &xpos, &ypos);
 
-
 			boids.updateBoids(xpos, ypos);
 			//x_norm = xpos / (window_width / 2) - 1;
 			//y_norm = -(ypos / (window_height / 2) - 1);
-
 			v_vertices = boids.getAllVert(window_width, window_height);
 			GLfloat* vertices = &v_vertices[0];
 
@@ -201,7 +222,21 @@ int main()
 			all_vertices.insert(all_vertices.end(), quads_ver.begin(), quads_ver.end());
 			all_vertices_ptr = &all_vertices[0];
 
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 			glBufferData(GL_ARRAY_BUFFER, (v_vertices.size() + bounds_vertices.size() + quads_ver.size()) * sizeof(GLfloat), all_vertices_ptr, GL_STREAM_DRAW);
+			
+			q_colors = boids.quad.getColors();
+			box_colors = boids.getBoundColors();
+			b_colors = boids.getBoidColors();
+			all_colors = b_colors;
+			all_colors.insert(all_colors.end(), box_colors.begin(), box_colors.end());
+			all_colors.insert(all_colors.end(), q_colors.begin(), q_colors.end());
+
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+			glBufferData(GL_ARRAY_BUFFER, all_colors.size() * sizeof(GLfloat), all_colors.data(), GL_STREAM_DRAW);
+			
 
 			// Specify the color of the background
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -210,12 +245,15 @@ int main()
 			// Tell OpenGL which Shader Program we want to use
 			glUseProgram(shaderProgram);
 			// Bind the VAO so OpenGL knows to use it
-			glBindVertexArray(VAO);
+			glBindVertexArray(vertexbuffer);
 
+		
+			
 			// Draw the triangle using the GL_TRIANGLES primitive
 			glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
 			//glDrawArrays(GL_LINES, v_vertices.size() / 3, bounds_vertices.size() / 3);
 			glDrawArrays(GL_LINES, v_vertices.size() / 3 + bounds_vertices.size() / 3, quads_ver.size() / 3);
+
 			glfwSwapBuffers(window);
 			// Take care of all GLFW events
 
@@ -230,8 +268,9 @@ int main()
 
 
 	// Delete all the objects we've created
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VertexArrayID);
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &colorBuffer);
 	glDeleteProgram(shaderProgram);
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
