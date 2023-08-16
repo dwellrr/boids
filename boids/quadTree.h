@@ -26,30 +26,25 @@ private:
     
     bool divided = false;
 
-    QuadTree* northWest = nullptr;
-    QuadTree* northEast = nullptr;
-    QuadTree* southWest = nullptr;
-    QuadTree* southEast = nullptr;
+    std::unique_ptr<QuadTree> northWest;
+    std::unique_ptr<QuadTree> northEast;
+    std::unique_ptr<QuadTree> southWest;
+    std::unique_ptr<QuadTree> southEast;
 
     int depth;
 
 public:
     std::vector<Boid*> boids;
+    QuadTree();
     QuadTree(const Rectangle& boundary, int capacity, int depth);
-    ~QuadTree();
 
     bool insert(Boid* boid);
     void subdivide();
 
-    std::vector<Boid*> query(const Rectangle& range);
+    void query(const Rectangle& range, std::vector<Boid*>& result);
     std::vector<GLfloat> getLines(int width, int height);
 
-    std::vector<Boid*> found;
 
-    std::vector<Boid*> found_ne;
-    std::vector<Boid*> found_nw;
-    std::vector<Boid*> found_se;
-    std::vector<Boid*> found_sw;
 
 };
 

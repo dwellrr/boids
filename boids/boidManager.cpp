@@ -18,7 +18,7 @@ boidManager::boidManager(std::vector<vector_2> _boids)
 boidManager::boidManager(int n) {
 
 	Rectangle screen = Rectangle(975, 540, 975, 540);
-	QuadTree quad = QuadTree(screen, 2, 5);
+	quad = QuadTree(screen, 2, 5);
 	vector_2 v = { 1, 1, 0 };
 	for (int i = 0; i < n; i++)
 	{
@@ -26,10 +26,7 @@ boidManager::boidManager(int n) {
 		addBoid(v);
 	}
 
-	for (Boid* i : boids)
-	{
-		quad.insert(i);
-	}
+
 }
 
 void boidManager::addBoid(vector_2 v) {
@@ -63,21 +60,17 @@ std::vector<GLfloat> boidManager::getQuadVert(int width, int height)
 }
 
 void boidManager::updateBoids(double xpos, double ypos) {
-	quad = QuadTree(screen, 5, 5);
+	quad = QuadTree(screen, 2, 5);
 	for (Boid* boid : this->boids) {
 		quad.insert(boid);
 	}
 	for (Boid* boid : this->boids) {
 		std::vector<Boid*> neighbors;
-		neighbors = quad.query(Rectangle(boid->pos.x, boid->pos.y, boid->boundBoxPx, boid->boundBoxPx));
+		quad.query(Rectangle(boid->pos.x, boid->pos.y, boid->boundBoxPx, boid->boundBoxPx), neighbors);
 		boid->update(neighbors, xpos, ypos);
-		quad.found.clear();
-		quad.found_nw.clear();
-		quad.found_ne.clear();
-		quad.found_sw.clear();
-		quad.found_se.clear();
 
 	}
+
 	
 }
 

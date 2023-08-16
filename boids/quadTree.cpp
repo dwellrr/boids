@@ -16,17 +16,6 @@ Rectangle::Rectangle(float x, float y, float w, float h)
 	this->h = h;
 }
 
-QuadTree::~QuadTree() {
-	delete northWest;
-	delete northEast;
-	delete southWest;
-	delete southEast;
-	found.~vector();
-	found_ne.~vector();
-	found_nw.~vector();
-	found_se.~vector();
-	found_sw.~vector();
-}
 
 bool Rectangle::contains(const Boid& boid) const
 {
@@ -44,11 +33,18 @@ return !(range.x - range.w > this->x + this->w ||
 		range.y + range.h < this->y - this->h);
 }
 
+QuadTree::QuadTree() {
+	this->capacity = 0;
+	this->depth = 0;
+	this->boids = std::vector<Boid*>();
+}
+
 QuadTree::QuadTree(const Rectangle& boundary, int capacity, int depth)
 {
 	this->boundary = boundary;
 	this->capacity = capacity;
 	this->depth = depth;
+	this->boids = std::vector<Boid*>();
 }								 
 
 bool QuadTree::insert(Boid *boid)
@@ -91,16 +87,16 @@ void QuadTree::subdivide()
 	float h = this->boundary.h / 2;
 
 	Rectangle ne = Rectangle(x + w, y - h, w, h);
-	this->northEast = new QuadTree(ne, this->capacity, depth - 1);
+	this->northEast = std::make_unique<QuadTree>(ne, this->capacity, depth - 1);
 
 	Rectangle nw = Rectangle(x - w, y - h, w, h);
-	this->northWest = new QuadTree(nw, this->capacity, depth - 1);
+	this->northWest = std::make_unique<QuadTree>(nw, this->capacity, depth - 1);
 
 	Rectangle se = Rectangle(x + w, y + h, w, h);
-	this->southEast = new QuadTree(se, this->capacity, depth - 1);
+	this->southEast = std::make_unique<QuadTree>(se, this->capacity, depth - 1);
 
 	Rectangle sw = Rectangle(x - w, y + h, w, h);
-	this->southWest = new QuadTree(sw, this->capacity, depth - 1);
+	this->southWest = std::make_unique<QuadTree>(sw, this->capacity, depth - 1);
 	for (Boid* i : this->boids)
 	{
 		this->northEast->insert(i);
@@ -114,40 +110,26 @@ void QuadTree::subdivide()
 	this->divided = true;
 }
 
-std::vector<Boid*> QuadTree::query(const Rectangle& range)
+void QuadTree::query(const Rectangle& range, std::vector<Boid*>& result)
 {
-
+	
 	if (!range.intersects(this->boundary)) {
-		return std::vector<Boid*>();
+		return;
 	}
 
 	if (this->divided) {
-		found_ne = this->northWest->query(range);
-		found.insert(found.end(), found_ne.begin(), found_ne.end());
-		found_ne.clear();
-		found_nw = this->northEast->query(range);
-		found.insert(found.end(), found_nw.begin(), found_nw.end());
-		found_nw.clear();
-		found_se = this->southWest->query(range);
-		found.insert(found.end(), found_se.begin(), found_se.end());
-		found_se.clear();
-		found_sw = this->southEast->query(range);
-		found.insert(found.end(), found_sw.begin(), found_sw.end());
-		found_sw.clear();
+		northWest->query(range, result);
+		northEast->query(range, result);
+		southWest->query(range, result);
+		southEast->query(range, result);
 	}
 	else {
 		for (Boid* p : this->boids) {
 			if (range.contains(*p)) {
-				found.push_back(p);
+				result.push_back(p);
 			}
 		}
 	}
-
-
-	std::vector<Boid*> res = found;
-	found.clear();
-
-	return res;
 }
 
 std::vector<GLfloat> QuadTree::getLines(int width, int height)
@@ -182,3 +164,4 @@ std::vector<GLfloat> QuadTree::getLines(int width, int height)
 	}
 	return vertices;
 }
+
