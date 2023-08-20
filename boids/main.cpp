@@ -40,9 +40,22 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
+bool isQuads = true; //using quadtree vs checking all neighbours 
+bool isBorder = false; //showing view range of each boid for quadtree
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		isQuads = !isQuads;
+	if (key == GLFW_KEY_B && action == GLFW_PRESS)
+		isBorder = !isBorder;
+
+}
+
+
 int main()
 {	
-	boidManager boids(500);
+	boidManager boids(1000);
 
 	// (1) GLFW: Initialise & Configure
 	// -----------------------------------------
@@ -75,6 +88,7 @@ int main()
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetKeyCallback(window, key_callback);
 
 
 	//Load GLAD so it configures OpenGL
@@ -187,6 +201,7 @@ int main()
 
 
 	double x_norm, y_norm;
+	
 
 	boids.setAI('b', boids.boids);
 	//boids.addBoid({ 100, 100, 0 });
@@ -204,7 +219,7 @@ int main()
 			// code here gets called with max FPS
 			glfwGetCursorPos(window, &xpos, &ypos);
 
-			boids.updateBoids(xpos, ypos);
+			boids.updateBoids(xpos, ypos, isQuads);
 			//x_norm = xpos / (window_width / 2) - 1;
 			//y_norm = -(ypos / (window_height / 2) - 1);
 			v_vertices = boids.getAllVert(window_width, window_height);
@@ -251,8 +266,10 @@ int main()
 			
 			// Draw the triangle using the GL_TRIANGLES primitive
 			glDrawArrays(GL_TRIANGLES, 0, v_vertices.size() / 3);
-			//glDrawArrays(GL_LINES, v_vertices.size() / 3, bounds_vertices.size() / 3);
-			glDrawArrays(GL_LINES, v_vertices.size() / 3 + bounds_vertices.size() / 3, quads_ver.size() / 3);
+			if(isBorder)
+				glDrawArrays(GL_LINES, v_vertices.size() / 3, bounds_vertices.size() / 3);
+			if (isQuads)
+				glDrawArrays(GL_LINES, v_vertices.size() / 3 + bounds_vertices.size() / 3, quads_ver.size() / 3);
 
 			glfwSwapBuffers(window);
 			// Take care of all GLFW events

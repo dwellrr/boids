@@ -120,16 +120,25 @@ std::vector<GLfloat> boidManager::getBoundColors()
 	return colors;
 }
 
-void boidManager::updateBoids(double xpos, double ypos) {
-	quad = QuadTree(screen, 2, 8);
-	for (Boid* boid : this->boids) {
-		quad.insert(boid);
-	}
-	for (Boid* boid : this->boids) {
-		std::vector<Boid*> neighbors;
-		quad.query(Rectangle(boid->pos.x, boid->pos.y, boid->boundBoxPx, boid->boundBoxPx), neighbors);
-		boid->update(neighbors, xpos, ypos);
+void boidManager::updateBoids(double xpos, double ypos, bool isQuads) {
+	if (isQuads) {
+		quad = QuadTree(screen, 2, 4);
+		for (Boid* boid : this->boids) {
+			quad.insert(boid);
+		}
+		for (Boid* boid : this->boids) {
+			std::vector<Boid*> neighbors;
+			quad.query(Rectangle(boid->pos.x, boid->pos.y, boid->boundBoxPx, boid->boundBoxPx), neighbors);
+			boid->update(neighbors, xpos, ypos);
 
+		}
+	}
+	else
+	{
+		for (Boid* boid : this->boids) {
+			boid->update(boids, xpos, ypos);
+
+		}
 	}
 
 	

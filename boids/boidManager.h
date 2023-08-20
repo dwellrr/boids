@@ -16,7 +16,7 @@ public:
 	std::vector<GLfloat> getBoundColors();
 
 	void addBoid(vector_2 v);
-	void updateBoids(double xpos, double ypos);
+	void updateBoids(double xpos, double ypos, bool isQuads);
 	void setAI(char ai, std::vector<Boid*> boids);
 	std::vector<Boid*> boids;
 	Rectangle screen = Rectangle(975, 540, 975, 540);
