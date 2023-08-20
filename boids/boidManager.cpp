@@ -2,10 +2,12 @@
 
 boidManager::boidManager() {
 	this->boids = {};
+	hash = SpatialHashGrid{ 1920, 1080, 50 };
 }
 
 boidManager::boidManager(Boid *firstBoid) {
 	this->boids = { firstBoid };
+	hash = SpatialHashGrid{ 1920, 1080, 50 };
 }
 
 boidManager::boidManager(std::vector<vector_2> _boids)
@@ -13,12 +15,14 @@ boidManager::boidManager(std::vector<vector_2> _boids)
 	for (vector_2 i : _boids) {
 		addBoid(i);
 	}
+	hash = SpatialHashGrid{ 1920, 1080, 50 };
 }
 
 boidManager::boidManager(int n) {
 
 	Rectangle screen = Rectangle(975, 540, 975, 540);
 	quad = QuadTree(screen, 2, 10);
+	hash = SpatialHashGrid{ 1920, 1080, 20 };
 	vector_2 v = { 1, 1, 0 };
 	for (int i = 0; i < n; i++)
 	{
@@ -32,6 +36,7 @@ boidManager::boidManager(int n) {
 void boidManager::addBoid(vector_2 v) {
 	Boid *boid = new Boid(v);
 	this->boids.push_back(boid);
+	this->hash.addBoid(boid);
 }
 
 std::vector<GLfloat> boidManager::getAllVert(int width, int height) {
@@ -120,7 +125,7 @@ std::vector<GLfloat> boidManager::getBoundColors()
 	return colors;
 }
 
-void boidManager::updateBoids(double xpos, double ypos, bool isQuads) {
+void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHash) {
 	if (isQuads) {
 		quad = QuadTree(screen, 2, 4);
 		for (Boid* boid : this->boids) {
@@ -131,6 +136,13 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads) {
 			quad.query(Rectangle(boid->pos.x, boid->pos.y, boid->boundBoxPx, boid->boundBoxPx), neighbors);
 			boid->update(neighbors, xpos, ypos);
 
+		}
+	}
+	else if (isHash) {
+		for (Boid* boid : this->boids) {
+			auto neighbors = hash.radiusSearch(boid, 30);
+			boid->update(neighbors, xpos, ypos);
+			hash.updateBoid(boid);
 		}
 	}
 	else
