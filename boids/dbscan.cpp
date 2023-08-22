@@ -8,7 +8,7 @@
 double dbscan::calculateDistance(const Boid* p1, const Boid* p2) {
     double dx = p1->pos.x - p2->pos.x;
     double dy = p1->pos.y - p2->pos.y;
-    return std::sqrt(dx * dx + dy * dy);
+    return dx * dx + dy * dy;
 }
 
 std::vector<std::vector<Boid*>> dbscan::dbscanClusters(std::vector<Boid*> points, double eps, int minPts) {
@@ -21,7 +21,7 @@ std::vector<std::vector<Boid*>> dbscan::dbscanClusters(std::vector<Boid*> points
 
         std::vector<Boid*> neighbors;
         for (int j = 0; j < n; ++j) {
-            if (i != j && calculateDistance(points[i], points[j]) <= eps) {
+            if (i != j && calculateDistance(points[i], points[j]) <= eps * eps) {
                 neighbors.push_back(points[j]);
             }
         }

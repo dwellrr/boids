@@ -150,7 +150,7 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHas
 	}
 	else if (isDBSCAN) {
 
-		auto clusters = _dbscan.dbscanClusters(boids, 50, 1);
+		auto clusters = _dbscan.dbscanClusters(boids, 200, 1);
 		for (auto cl : clusters) {
 			if (cl == clusters[0]) {
 				for (Boid* boid : cl)
