@@ -53,3 +53,41 @@ std::vector<std::vector<Boid*>> dbscan::dbscanClusters(std::vector<Boid*> points
     return clusters;
 }
 
+std::vector<std::vector<Boid*>> dbscan::dbscanClusters(std::vector<Boid*> points, QuadTree* quads, double eps, int minPts) {
+    int n = points.size();
+    int clusterIdx = 0;
+
+    for (int i = 0; i < n; ++i) {
+        if (points[i]->label != 0) // Skip if point is already classified
+            continue;
+
+        std::vector<Boid*> neighbors;
+        quads->query(Rectangle(points[i]->pos.x, points[i]->pos.y, points[i]->boundBoxPx, points[i]->boundBoxPx), neighbors);
+
+        if (neighbors.size() < minPts) {
+            points[i]->label = -1; // Noise
+        }
+        else {
+            ++clusterIdx;
+            points[i]->label = clusterIdx;
+            for (Boid* neighbor : neighbors) {
+                if (neighbor->label != -1) {
+                    neighbor->label = clusterIdx;
+                }
+            }
+        }
+    }
+
+    std::vector<std::vector<Boid*>> clusters(clusterIdx + 1);
+    for (int i = 0; i < n; ++i) {
+        if (points[i]->label != -1) {
+            clusters[points[i]->label].push_back(points[i]);
+        }
+        else {
+            clusters[0].push_back(points[i]);
+        }
+    }
+
+    return clusters;
+}
+

@@ -4,6 +4,8 @@
 #include "SpatialHashGrid.h"
 #include "dbscan.h"
 
+#include <random> 
+
 class boidManager {
 public:
 	boidManager();

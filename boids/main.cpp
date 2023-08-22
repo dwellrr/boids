@@ -220,7 +220,7 @@ int main()
 		double time = glfwGetTime();
 		double deltaTime = time - lastTime;
 
-		if (deltaTime >= maxPeriod) {
+		//if (deltaTime >= maxPeriod) {
 			lastTime = time;
 			// code here gets called with max FPS
 			glfwGetCursorPos(window, &xpos, &ypos);
@@ -283,7 +283,7 @@ int main()
 			std::cout << 1 / deltaTime << std::endl;
 
 			glfwPollEvents();
-		}
+		//}
 
 	}
 

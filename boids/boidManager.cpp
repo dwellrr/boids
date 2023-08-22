@@ -23,11 +23,25 @@ boidManager::boidManager(int n) {
 	Rectangle screen = Rectangle(975, 540, 975, 540);
 	quad = QuadTree(screen, 2, 10);
 	hash = SpatialHashGrid{ 1920, 1080, 20 };
-	vector_2 v = { 1, 1, 0 };
+	vector_2 v;
+
+	std::random_device rd;
+	std::mt19937 gen(rd()); // Mersenne Twister engine is a common choice
+	// Define the distribution (range) for random numbers
+	 // Generates integers between 1 and 100
+
+	// Define two different distributions
+	std::uniform_int_distribution<> x_d(0, 1920); // Generates integers between 1 and 100
+	std::uniform_int_distribution<> y_d(0, 1080); // Generates random numbers from a normal distribution
+
+	// Generate and print random numbers from the two distributions
+
 
 	for (int i = 0; i < n; i++)
 	{
-		
+		double x = x_d(gen);
+		double y = y_d(gen);
+		v = { x, y, 0 };
 		addBoid(v);
 	}
 
@@ -129,7 +143,7 @@ std::vector<GLfloat> boidManager::getBoundColors()
 }
 
 void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHash, bool isDBSCAN) {
-	if (isQuads) {
+	if (isQuads && !isDBSCAN) {
 		quad = QuadTree(screen, 2, 4);
 		for (Boid* boid : this->boids) {
 			quad.insert(boid);
@@ -139,6 +153,27 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHas
 			quad.query(Rectangle(boid->pos.x, boid->pos.y, boid->boundBoxPx, boid->boundBoxPx), neighbors);
 			boid->update(neighbors, xpos, ypos);
 
+		}
+	}
+	else if (isDBSCAN && isQuads) {
+		quad = QuadTree(screen, 2, 4);
+		for (Boid* boid : this->boids) {
+			quad.insert(boid);
+		}
+		auto clusters = _dbscan.dbscanClusters(boids, &quad, 200, 1);
+		for (auto cl : clusters) {
+			if (cl == clusters[0]) {
+				for (Boid* boid : cl)
+				{
+					boid->update({ boid }, xpos, ypos);
+				}
+			}
+			else {
+				for (Boid* boid : cl)
+				{
+					boid->update(cl, xpos, ypos);
+				}
+			}
 		}
 	}
 	else if (isHash) {
