@@ -69,8 +69,8 @@ std::vector<GLfloat> boidManager::getBoidColors()
 {
 	GLfloat x, y, z;
 	std::vector <GLfloat> colors;
-	x = 0.3f;
-	y = 0.3f;
+	x = 0.5f;
+	y = 0.5f;
 
 	for (Boid* boid : this->boids) {
 		z = boid->label % 10;
@@ -150,17 +150,21 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHas
 	}
 	else if (isDBSCAN) {
 
-		auto clusters = _dbscan.dbscanClusters(boids, 30, 5);
+		auto clusters = _dbscan.dbscanClusters(boids, 50, 1);
 		for (auto cl : clusters) {
-			
+			if (cl == clusters[0]) {
+				for (Boid* boid : cl)
+				{
+					boid->update({boid}, xpos, ypos);
+				}
+			}
+			else {
 				for (Boid* boid : cl)
 				{
 					boid->update(cl, xpos, ypos);
 				}
-			
-
+			}
 		}
-
 	}
 	else
 	{

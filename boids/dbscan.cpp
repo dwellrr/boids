@@ -45,6 +45,9 @@ std::vector<std::vector<Boid*>> dbscan::dbscanClusters(std::vector<Boid*> points
         if (points[i]->label != -1) {
             clusters[points[i]->label].push_back(points[i]);
         }
+        else {
+            clusters[0].push_back(points[i]);
+        }
     }
 
     return clusters;
