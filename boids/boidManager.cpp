@@ -24,6 +24,7 @@ boidManager::boidManager(int n) {
 	quad = QuadTree(screen, 2, 10);
 	hash = SpatialHashGrid{ 1920, 1080, 20 };
 	vector_2 v = { 1, 1, 0 };
+
 	for (int i = 0; i < n; i++)
 	{
 		
@@ -125,7 +126,7 @@ std::vector<GLfloat> boidManager::getBoundColors()
 	return colors;
 }
 
-void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHash) {
+void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHash, bool isDBSCAN) {
 	if (isQuads) {
 		quad = QuadTree(screen, 2, 4);
 		for (Boid* boid : this->boids) {
@@ -144,6 +145,20 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHas
 			boid->update(neighbors, xpos, ypos);
 			hash.updateBoid(boid);
 		}
+	}
+	else if (isDBSCAN) {
+
+		auto clusters = dbscan(boids, 30, 3);
+		for (auto cl : clusters) {
+			
+				for (Boid* boid : cl)
+				{
+					boid->update(cl, xpos, ypos);
+				}
+			
+
+		}
+
 	}
 	else
 	{

@@ -40,9 +40,10 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
-bool isQuads = true; //using quadtree vs checking all neighbours 
+bool isQuads = false; //using quadtree vs checking all neighbours 
 bool isBorder = false; //showing view range of each boid for quadtree
 bool isHash = false;
+bool isDBSCAN = false;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -52,6 +53,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		isBorder = !isBorder;
 	if (key == GLFW_KEY_H && action == GLFW_PRESS)
 		isHash = !isHash;
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		isDBSCAN = !isDBSCAN;
 
 }
 
@@ -222,7 +225,7 @@ int main()
 			// code here gets called with max FPS
 			glfwGetCursorPos(window, &xpos, &ypos);
 
-			boids.updateBoids(xpos, ypos, isQuads, isHash);
+			boids.updateBoids(xpos, ypos, isQuads, isHash, isDBSCAN);
 			//x_norm = xpos / (window_width / 2) - 1;
 			//y_norm = -(ypos / (window_height / 2) - 1);
 			v_vertices = boids.getAllVert(window_width, window_height);

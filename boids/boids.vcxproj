@@ -119,9 +119,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Stran\Desktop\nerd shit\OpenGlExample\test\glfw-3.3.8.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,6 +152,7 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="boid.cpp" />
     <ClCompile Include="boidManager.cpp" />
+    <ClCompile Include="dbscan.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="quadTree.cpp" />
@@ -160,8 +162,10 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="boid.h" />
     <ClInclude Include="boidManager.h" />
+    <ClInclude Include="dbscan.hpp" />
     <ClInclude Include="quadTree.h" />
     <ClInclude Include="SpatialHashGrid.h" />
+    <ClInclude Include="vendor\nanoflann\nanoflann.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

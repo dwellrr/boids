@@ -2,6 +2,7 @@
 #include <vector>
 #include "quadTree.h"
 #include "SpatialHashGrid.h"
+#include "dbscan.hpp"
 
 class boidManager {
 public:
@@ -17,13 +18,13 @@ public:
 	std::vector<GLfloat> getBoundColors();
 
 	void addBoid(vector_2 v);
-	void updateBoids(double xpos, double ypos, bool isQuads, bool isHash);
+	void updateBoids(double xpos, double ypos, bool isQuads, bool isHash, bool isDBSCAN);
 	void setAI(char ai, std::vector<Boid*> boids);
 	std::vector<Boid*> boids;
 	Rectangle screen = Rectangle(975, 540, 975, 540);
 	QuadTree quad;
 	SpatialHashGrid hash;
-	
+	//std::vector<point2> points;
 
 private:
 	
