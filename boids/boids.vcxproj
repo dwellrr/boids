@@ -162,10 +162,9 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="boid.h" />
     <ClInclude Include="boidManager.h" />
-    <ClInclude Include="dbscan.hpp" />
+    <ClInclude Include="dbscan.h" />
     <ClInclude Include="quadTree.h" />
     <ClInclude Include="SpatialHashGrid.h" />
-    <ClInclude Include="vendor\nanoflann\nanoflann.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

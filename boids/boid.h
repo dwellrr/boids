@@ -44,6 +44,8 @@ public:
 	void update(std::vector<Boid*> allBoids, double xpos, double ypos);
 	vector_2 pos;
 
+	int label = 0;
+
 protected:
 	
 	vector_2 direction = {0, 0, 0};

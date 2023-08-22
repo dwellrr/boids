@@ -2,7 +2,7 @@
 #include <vector>
 #include "quadTree.h"
 #include "SpatialHashGrid.h"
-#include "dbscan.hpp"
+#include "dbscan.h"
 
 class boidManager {
 public:
@@ -25,6 +25,7 @@ public:
 	QuadTree quad;
 	SpatialHashGrid hash;
 	//std::vector<point2> points;
+	dbscan _dbscan;
 
 private:
 	
