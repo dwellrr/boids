@@ -29,7 +29,7 @@ public:
 	GLfloat vx = 0;
 	GLfloat vy = 0;
 
-	GLfloat boundBoxPx = 40;
+	GLfloat boundBoxPx = 70;
 	int spatialIndex = -1;
 
 	vector_2 getPos();

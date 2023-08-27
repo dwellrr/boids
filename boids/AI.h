@@ -27,7 +27,7 @@ public:
 
 private:
 
-    double visual_range = 40;
+    double visual_range = 70;
     double turnfactor = 5;
     double protectedRange = 8;
     double centeringfactor = 0.009;

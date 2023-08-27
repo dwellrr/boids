@@ -13,7 +13,7 @@ Boid::Boid(float x, float y) {
 
 Boid::Boid(vector_2 v) {
 	this->pos = v;
-	this->ai = new CursorFollowingAI();
+	this->ai = new BoidFollowingAI();
 }
 
 void Boid::setPos(vector_2 _pos) {

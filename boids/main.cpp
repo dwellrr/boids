@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 
+#include <fstream> 
 #include <iostream> 
 
 // Vertex Shader source code
@@ -61,6 +62,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 int main()
 {	
+	// Construct the file path
+	//std::string filePath = "../analytics/data5.csv";
+	//std::ofstream outputFile(filePath); // Report writing
+
+	//if (!outputFile) {
+	//	std::cerr << "Error opening file for writing!" << std::endl;
+	//	return 1;
+	//}
+
+
 	boidManager boids(1000);
 
 	// (1) GLFW: Initialise & Configure
@@ -204,6 +215,7 @@ int main()
 	auto start = std::chrono::steady_clock::now();
 	int frames = 0;
 	double lastTime = 0.0;
+	int ticks_new_boid = 0;
 
 
 	double x_norm, y_norm;
@@ -219,6 +231,13 @@ int main()
 	{
 		double time = glfwGetTime();
 		double deltaTime = time - lastTime;
+
+		//if (ticks_new_boid >= 1)
+		//{
+		//	boids.addBoid();
+		//	ticks_new_boid = 0;
+		//
+		//}
 
 		//if (deltaTime >= maxPeriod) {
 			lastTime = time;
@@ -280,7 +299,9 @@ int main()
 			glfwSwapBuffers(window);
 			// Take care of all GLFW events
 
-			std::cout << 1 / deltaTime << std::endl;
+			//std::cout << 1 / deltaTime << std::endl;
+			//outputFile << boids.boids.size() << "," << 1 / deltaTime << std::endl;
+			ticks_new_boid++;
 
 			glfwPollEvents();
 		//}
@@ -289,7 +310,7 @@ int main()
 
 
 
-
+	//outputFile.close();
 	// Delete all the objects we've created
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glDeleteBuffers(1, &vertexbuffer);

@@ -48,6 +48,24 @@ boidManager::boidManager(int n) {
 
 }
 
+void boidManager::addBoid() {
+	std::random_device rd;
+	std::mt19937 gen(rd()); // Mersenne Twister engine is a common choice
+	// Define the distribution (range) for random numbers
+	 // Generates integers between 1 and 100
+
+	// Define two different distributions
+	std::uniform_int_distribution<> x_d(0, 1920); // Generates integers between 1 and 100
+	std::uniform_int_distribution<> y_d(0, 1080); // Generates random numbers from a normal distribution
+	double x = x_d(gen);
+	double y = y_d(gen);
+	vector_2 v = { x, y, 0 };
+
+	Boid* boid = new Boid(v);
+	this->boids.push_back(boid);
+	this->hash.addBoid(boid);
+}
+
 void boidManager::addBoid(vector_2 v) {
 	Boid *boid = new Boid(v);
 	this->boids.push_back(boid);
@@ -160,7 +178,7 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHas
 		for (Boid* boid : this->boids) {
 			quad.insert(boid);
 		}
-		auto clusters = _dbscan.dbscanClusters(boids, &quad, 200, 1);
+		auto clusters = _dbscan.dbscanClusters(boids, &quad, 400, 1);
 		for (auto cl : clusters) {
 			if (cl == clusters[0]) {
 				for (Boid* boid : cl)
@@ -185,7 +203,7 @@ void boidManager::updateBoids(double xpos, double ypos, bool isQuads, bool isHas
 	}
 	else if (isDBSCAN) {
 
-		auto clusters = _dbscan.dbscanClusters(boids, 200, 1);
+		auto clusters = _dbscan.dbscanClusters(boids, 100, 1);
 		for (auto cl : clusters) {
 			if (cl == clusters[0]) {
 				for (Boid* boid : cl)
